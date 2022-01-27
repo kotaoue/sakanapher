@@ -13,9 +13,6 @@ $ go run main.go -name=sakanakun -message="おはようございます。ごき�
 おはようギョざいます。ギョきげんよろしゅうギョざいますか？
 
 $ go run main.go -name=sakanakun -attribute=gopher -message="おはようございます。ごきげんよろしゅうございますか？"
-おはようギョざいます。ギョきげんよろしゅうギョざいますか？
-
-$ go run main.go -name=sakanakun -attribute=gopher -message="おはようございます。ごきげんよろしゅうございますか？"
 おはようぎょざいます。Goきげんよろしゅうぎょざいますか？
 or
 おはようGoざいます。ぎょきげんよろしゅうGoざいますか？
