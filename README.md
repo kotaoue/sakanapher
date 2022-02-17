@@ -19,11 +19,13 @@ or
 ```
 
 ## Flowchart
+```mermaid
 flowchart TD
-  START-->A{Are you Mr.Sakanakun?}
-  A-->|Yes|B{Are you Gopher?}
-    B-->|Yes|replace to ギョ or Go
-    B-->|No|replace to ギョ
-  A-->|No|C{Are you Gopher?}
-    B-->|Yes|replace to Go
-    B-->|No|not replace
+  START-->A{Mr.Sakanakun?}
+  A-->|Yes|B{Gopher?}
+    B -->|Yes| BY[ギョ or Go]
+    B -->|No|ギョ
+  A-->|No|C{Gopher?}
+    C -->|Yes|Go
+    C -->|No| CN[not replace]
+```
