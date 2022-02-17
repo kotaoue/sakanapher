@@ -1,6 +1,17 @@
 # sakanapher
 If Mr.Sakanakun is Gopher.
 
+## Overview
+```mermaid
+flowchart TD
+  START-->A{Mr.Sakanakun?}
+  A-->|Yes|B{Gopher?}
+    B -->|Yes| BY[ギョ or Go]
+    B -->|No|ギョ
+  A-->|No|C{Gopher?}
+    C -->|Yes|Go
+    C -->|No| CN[not replace]
+```
 ## Usage
 ```ShellSession
 $ go run main.go -message="おはようございます。ごきげんよろしゅうございますか？"
@@ -16,16 +27,4 @@ $ go run main.go -name=sakanakun -attribute=gopher -message="おはようござ�
 おはようぎょざいます。Goきげんよろしゅうぎょざいますか？
 or
 おはようGoざいます。ぎょきげんよろしゅうGoざいますか？
-```
-
-## Flowchart
-```mermaid
-flowchart TD
-  START-->A{Mr.Sakanakun?}
-  A-->|Yes|B{Gopher?}
-    B -->|Yes| BY[ギョ or Go]
-    B -->|No|ギョ
-  A-->|No|C{Gopher?}
-    C -->|Yes|Go
-    C -->|No| CN[not replace]
 ```
