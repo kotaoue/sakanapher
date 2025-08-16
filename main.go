@@ -15,11 +15,8 @@ var (
 	message = flag.String("message", "おはようございます", "message of wish to convert")
 )
 
-func init() {
-	flag.Parse()
-}
-
 func main() {
+	flag.Parse()
 	_, err := Main()
 
 	if err != nil {
