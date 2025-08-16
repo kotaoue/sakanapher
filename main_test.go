@@ -3,47 +3,56 @@ package main
 import (
 	"bytes"
 	"flag"
+	"fmt"
 	"io"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 )
 
-func TestMain(t *testing.T) {
+const testMessage = "おはようございます。ごきげんよろしゅうございますか？"
+
+// captureOutput executes the given function while capturing its standard output.
+func captureOutput(f func()) string {
+	old := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+	defer func() { os.Stdout = old }()
+
+	f()
+
+	w.Close()
+
+	var buf bytes.Buffer
+	io.Copy(&buf, r)
+	return strings.TrimSpace(buf.String())
+}
+
+func TestMain_Fixed(t *testing.T) {
 	cases := []struct {
 		name     string
 		attr     string
 		username string
-		message  string
-		expected string
+		want     string
 	}{
 		{
-			name:     "gopher and sakanakun",
-			attr:     "gopher",
-			username: "sakanakun",
-			message:  "ごはんですよ",
-			expected: "Go",
+			name:     "no flags",
+			attr:     "",
+			username: "",
+			want:     "おはようございます。ごきげんよろしゅうございますか？",
 		},
 		{
 			name:     "gopher",
 			attr:     "gopher",
 			username: "",
-			message:  "ごはんですよ",
-			expected: "Go",
+			want:     "おはようGoざいます。GoきげんよろしゅうGoざいますか？",
 		},
 		{
 			name:     "sakanakun",
 			attr:     "",
 			username: "sakanakun",
-			message:  "ごはんですよ",
-			expected: "ギョ",
-		},
-		{
-			name:     "no attribute",
-			attr:     "",
-			username: "",
-			message:  "ごはんですよ",
-			expected: "ご",
+			want:     "おはようギョざいます。ギョきげんよろしゅうギョざいますか？",
 		},
 	}
 
@@ -51,24 +60,33 @@ func TestMain(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			flag.Set("attribute", tt.attr)
 			flag.Set("name", tt.username)
-			flag.Set("message", tt.message)
+			flag.Set("message", testMessage)
 
-			// redirect stdout
-			old := os.Stdout
-			r, w, _ := os.Pipe()
-			os.Stdout = w
+			got := captureOutput(func() { Main() })
 
-			Main()
+			if got != tt.want {
+				t.Errorf("want %q, got %q", tt.want, got)
+			}
+		})
+	}
+}
 
-			// restore stdout
-			w.Close()
-			os.Stdout = old
+func TestMain_Random(t *testing.T) {
+	flag.Set("attribute", "gopher")
+	flag.Set("name", "sakanakun")
+	flag.Set("message", testMessage)
 
-			var buf bytes.Buffer
-			io.Copy(&buf, r)
+	wants := []string{
+		"おはようGoざいます。ぎょきげんよろしゅうGoざいますか？",
+		"おはようぎょざいます。Goきげんよろしゅうぎょざいますか？",
+	}
 
-			if !strings.Contains(buf.String(), tt.expected) {
-				t.Errorf("expected %s, but got %s", tt.expected, buf.String())
+	for i := 0; i < 10; i++ {
+		t.Run(fmt.Sprintf("attempt_%02d", i+1), func(t *testing.T) {
+			got := captureOutput(func() { Main() })
+
+			if !slices.Contains(wants, got) {
+				t.Errorf("got %q, want one of %v", got, wants)
 			}
 		})
 	}
