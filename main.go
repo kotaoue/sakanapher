@@ -5,7 +5,6 @@ import (
 	"math/rand"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -24,7 +23,6 @@ var rootCmd = &cobra.Command{
 		switch {
 		case attribute == "gopher" && name == "sakanakun":
 			ss := []string{"Go", "ぎょ"}
-			rand.Seed(time.Now().UnixNano())
 			rand.Shuffle(len(ss), func(i, j int) { ss[i], ss[j] = ss[j], ss[i] })
 
 			cnt := strings.Count(message, "ご")
