@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -31,38 +30,36 @@ func captureOutput(f func()) string {
 
 func TestMain_Fixed(t *testing.T) {
 	cases := []struct {
-		name     string
-		attr     string
-		username string
-		want     string
+		name string
+		args []string
+		want string
 	}{
 		{
-			name:     "no flags",
-			attr:     "",
-			username: "",
-			want:     "おはようございます。ごきげんよろしゅうございますか？",
+			name: "no flags",
+			args: []string{"--message=" + testMessage},
+			want: "おはようございます。ごきげんよろしゅうございますか？",
 		},
 		{
-			name:     "gopher",
-			attr:     "gopher",
-			username: "",
-			want:     "おはようGoざいます。GoきげんよろしゅうGoざいますか？",
+			name: "gopher",
+			args: []string{"--attribute=gopher", "--message=" + testMessage},
+			want: "おはようGoざいます。GoきげんよろしゅうGoざいますか？",
 		},
 		{
-			name:     "sakanakun",
-			attr:     "",
-			username: "sakanakun",
-			want:     "おはようギョざいます。ギョきげんよろしゅうギョざいますか？",
+			name: "sakanakun",
+			args: []string{"--name=sakanakun", "--message=" + testMessage},
+			want: "おはようギョざいます。ギョきげんよろしゅうギョざいますか？",
 		},
 	}
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			flag.Set("attribute", tt.attr)
-			flag.Set("name", tt.username)
-			flag.Set("message", testMessage)
+			// Reset flag variables to their zero value before each run
+			attribute = ""
+			name = ""
 
-			got := captureOutput(func() { Main() })
+			rootCmd.SetArgs(tt.args)
+
+			got := captureOutput(Execute)
 
 			if got != tt.want {
 				t.Errorf("want %q, got %q", tt.want, got)
@@ -72,18 +69,21 @@ func TestMain_Fixed(t *testing.T) {
 }
 
 func TestMain_Random(t *testing.T) {
-	flag.Set("attribute", "gopher")
-	flag.Set("name", "sakanakun")
-	flag.Set("message", testMessage)
-
 	wants := []string{
 		"おはようGoざいます。ぎょきげんよろしゅうGoざいますか？",
 		"おはようぎょざいます。Goきげんよろしゅうぎょざいますか？",
 	}
 
+	args := []string{"--attribute=gopher", "--name=sakanakun", "--message=" + testMessage}
+
 	for i := 0; i < 10; i++ {
 		t.Run(fmt.Sprintf("attempt_%02d", i+1), func(t *testing.T) {
-			got := captureOutput(func() { Main() })
+			// Reset flag variables to their zero value before each run
+			attribute = ""
+			name = ""
+
+			rootCmd.SetArgs(args)
+			got := captureOutput(Execute)
 
 			if !slices.Contains(wants, got) {
 				t.Errorf("got %q, want one of %v", got, wants)
