@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -20,25 +18,8 @@ var rootCmd = &cobra.Command{
 	Short: "A CLI tool to convert messages like a fish-loving gopher.",
 	Long:  `sakanapher is a CLI application that replaces specific characters in a message based on attributes. `,
 	Run: func(cmd *cobra.Command, args []string) {
-		switch {
-		case attribute == "gopher" && name == "sakanakun":
-			ss := []string{"Go", "ぎょ"}
-			rand.Shuffle(len(ss), func(i, j int) { ss[i], ss[j] = ss[j], ss[i] })
-
-			cnt := strings.Count(message, "ご")
-			if cnt > 0 {
-				for i := 0; i < cnt; i++ {
-					message = strings.Replace(message, "ご", ss[i%len(ss)], 1)
-				}
-			}
-			fmt.Println(message)
-		case attribute == "gopher":
-			fmt.Println(strings.ReplaceAll(message, "ご", "Go"))
-		case name == "sakanakun":
-			fmt.Println(strings.ReplaceAll(message, "ご", "ギョ"))
-		default:
-			fmt.Println(message)
-		}
+		s := Sakanize(message, attribute, name)
+		fmt.Println(s)
 	},
 }
 
