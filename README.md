@@ -1,5 +1,9 @@
 # sakanapher
 
+[![Go](https://github.com/kotaoue/sakanapher/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/kotaoue/sakanapher/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/kotaoue/sakanapher/branch/main/graph/badge.svg)](https://codecov.io/gh/kotaoue/sakanapher)
+[![License](https://img.shields.io/github/license/kotaoue/sakanapher)](https://github.com/kotaoue/sakanapher/blob/main/LICENSE)
+
 If Mr.Sakanakun is Gopher.
 
 ## Overview
